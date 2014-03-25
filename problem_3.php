@@ -15,39 +15,6 @@
             return self::getGCD($b, gmp_mod($a,$b));
         }
 
-        /* ($a * $b) % $m */
-        public static function modMult($a, $b, $m) {
-            $result = gmp_init("0");
-            $rem = gmp_mod($a, $m);
-            while ( $b ) {
-                if (gmp_strval(gmp_and($b, "1")) == "1") {
-                    $result = gmp_add($result, $rem);
-                    if (gmp_cmp($result, $m) > 0) {
-                        $result = gmp_sub($result, $m);
-                    }
-                }
-                $rem = gmp_mul($rem, "2");
-                if (gmp_cmp($rem, $m) > 0) $rem = gmp_sub($rem, $m);
-                //$b >>= 1;
-                $b = gmp_sub($b, "1");
-            }
-            return $result;
-        }
-
-        /* ($a ^ $b) % $m */
-        public static function modFact($a, $b, $m) {
-            $result = gmp_init("1");
-            $rem = gmp_mod($a, $m);
-            while ( $b ) {
-                if (gmp_strval(gmp_and($b, "1")) == "1") {
-                    $result = self::modMult($result, $rem, $m);
-                }
-                $rem = self::modMult($rem, $rem, $m);
-                $b = gmp_div($b, "2");
-            }
-            return $result;
-        }
-
         public static function mathPowMod($base, $power, $mod) {
             $result = gmp_init("1");
             while (gmp_cmp($power, "0") > 0) {

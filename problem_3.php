@@ -150,7 +150,7 @@
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
             $strProblem .= "600851475143 の素因数のうち最大のものを求めよ。";
 
-            $arg = gmp_init("354584554504585");
+            $arg = gmp_init("999999999999999989");
             $result = "";
             if (is_array($args) && array_key_exists(0, $args)) {
                 list($arg) = $args;

@@ -40,13 +40,7 @@
             }
             for ($i=gmp_init("0");gmp_cmp($i, $t) < 0;$i = gmp_add($i, "1")) {
                 // 2,..,n-1からランダムに値を選ぶ
-                $rand = gmp_random(5);
-                if (gmp_cmp($rand, "1") <= 0) {
-                     $val = gmp_init("2");
-                }
-                else {
-                    $val = gmp_mod($rand, $n);
-                }
+                $val = self::gmp_rand(2, gmp_sub($n, "1"));
                 $x = gmp_init(bcpowmod(gmp_strval($val), gmp_strval($d), gmp_strval($n)));
                 if (gmp_cmp($x, "1") == 0 || gmp_cmp($x, gmp_sub($n, "1")) == 0) {
                      continue;
@@ -65,7 +59,7 @@
         public static function factorBrent($a, $b, $c) {
             return gmp_mod(gmp_add(gmp_mod(gmp_mul($a, $a), $b), $c), $b);
         }
-        
+
         public static function gmp_min($a, $b) {
             if (gmp_cmp($a, $b) <= 0) {
                 return $a;
@@ -73,12 +67,25 @@
             return $b;
         }
 
+        public static function gmp_rand($min, $max, $factor = 5) {
+            $rand = gmp_random( $factor );
+            if (gmp_cmp($rand, $min) <= 0) {
+                return $min;
+            }
+            else if (gmp_cmp($rand, $max) > 0) {
+                return gmp_mod($rand, gmp_add($max, "1"));
+            }
+            else {
+                return $rand;
+            }
+        }
+
         public static function getBrent($n) {
 
             if (gmp_cmp(gmp_mod($n, "2"), "0") == 0) { return 2; }
-            $y = gmp_init((string)rand(1, $n-1));
-            $c = gmp_init((string)rand(1, $n-1));
-            $m = gmp_init((string)rand(1, $n-1));
+            $y = self::gmp_rand("1", gmp_sub($n, "1"));
+            $c = self::gmp_rand("1", gmp_sub($n, "1"));
+            $m = self::gmp_rand("1", gmp_sub($n, "1"));
             $g = gmp_init("1");
             $r = gmp_init("1");
             $q = gmp_init("1");
@@ -146,7 +153,7 @@
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
             $strProblem .= "600851475143 の素因数のうち最大のものを求めよ。";
 
-            $arg = gmp_init("600851475143");
+            $arg = gmp_init("354584554504585");
             $result = "";
             if (is_array($args) && array_key_exists(0, $args)) {
                 list($arg) = $args;

@@ -92,8 +92,8 @@
             while ( gmp_cmp($g, "1") == 0 ) {
                 $x = gmp_init(gmp_strval($y));
                 for ($i = gmp_init("0"); gmp_cmp($i, $r) <= 0; $i = gmp_add($i, "1")) {
-                    $ti = gmp_strval($i);
-                    $tr = gmp_strval($r);
+                    #ti = gmp_strval($i);
+                    #$tr = gmp_strval($r);
                     $y = self::factorBrent($y, $n, $c);
                 }
                 $k = gmp_init("0");
@@ -107,7 +107,7 @@
                     }
 
                     $g = gmp_gcd($q, $n);
-                    $k = gmp_add($k,  $m);
+                    $k = gmp_add($k, $m);
                 }
                 $r = gmp_mul($r, "2");
             }
@@ -129,17 +129,14 @@
 
             $return = array();
             $n = $arg;
-            $c = 0;
             while (gmp_cmp($n, "1") > 0) {
                 $f = self::getBrent($n);
-                $tf = gmp_strval($f);
+                #$tf = gmp_strval($f);
                 if (gmp_cmp($f, "1") == 0) { break; }
                 if (self::isMillerRabinPass($f)) {
-                    #var_dump("f:".$f);
                     $return[] = gmp_strval($f);
                     $n = gmp_div($n, $f);
                 }
-                $c++;
             }
             sort($return);
             return $return;

@@ -5,25 +5,25 @@
         public static $primesLength;
         public static $primesString = "2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211";
         public static $indices = array(
-                                                                1, 11, 13, 17, 19, 23, 29, 31, 37, 41,
-                                                                43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
-                                                                89, 97,101,103,107,109,113,121,127,131,
-                                                                137,139,143,149,151,157,163,167,169,173,
-                                                                179,181,187,191,193,197,199,209);
+                                        1, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+                                        43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
+                                        89, 97,101,103,107,109,113,121,127,131,
+                                        137,139,143,149,151,157,163,167,169,173,
+                                        179,181,187,191,193,197,199,209);
         // distances between sieve values
         public static $offsets = array(
-                                                                10, 2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6,
-                                                                6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4,
-                                                                2, 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6,
-                                                                4, 2, 4, 6, 2, 6, 4, 2, 4, 2,10, 2);
+                                        10, 2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6,
+                                        6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4,
+                                        2, 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6,
+                                        4, 2, 4, 6, 2, 6, 4, 2, 4, 2,10, 2);
         public static $pk = array ( 0,1,2,3,5,6,7,10,11,13,14,15,17,0 );
         public static $checkStart = 212;
         public static $maxInt = 2147483647;
         
         // 篩の素数幅
-        public static $sieveWidth = 7;
+        public static $sieveWidth = 12;
         // 篩の大きさ
-        public static $sieveBound = 6;
+        public static $sieveBound = 20000;
 
         public function __construct() {
 
@@ -106,6 +106,8 @@
         }
         
         public static function print_matrix($matrix, $name) {
+            
+            if (!is_array($matrix)) { return; }
             echo "----- ${name} -----\n";
 
             $notMatrix = false;
@@ -113,13 +115,13 @@
                 
                 if (is_array($row)) {
                     foreach ($row as $col) {
-                        printf("%2d ", $col);
+                        printf("%2s ", $col);
                     }
                     echo "\n";
                 }
                 else {
                     $notMatrix = true;
-                    printf("%2d ", $row);
+                    printf("%2s ", $row);
                 }
             }
             if ($notMatrix) {
@@ -335,25 +337,6 @@
             return $kk;
         }
 
-        public static function factor($arg, $bVerbose) {
-
-            $return = array();
-            $n = $arg;
-            while (gmp_cmp($n, "1") > 0) {
-                //$f = self::getBrent($n);
-                $f = self::quadraticSieve($n, $bVerbose);
-                #$tf = gmp_strval($f);
-                if (gmp_cmp($f, "1") == 0) { break; }
-                //if (self::isMillerRabinPrime($f)) {
-                if (self::isFermatPrime($f)) {
-                    $return[] = gmp_strval($f);
-                    $n = gmp_div($n, $f);
-                }
-            }
-            sort($return);
-            return $return;
-        }
-        
         public static function swapMatrix($i, $p, &$matrix) {
             
             if (!is_array($matrix)) { return; }
@@ -369,6 +352,23 @@
             
             // 因数分解される数
             $gTarget = $arg;
+            $strTarget = gmp_strval($gTarget);
+            if (strlen($strTarget) <= 0) { return ""; }
+            
+            if ($bVerbose) {
+                echo "----- Execute quadratic sieve -----\n";
+                echo "Target number : " . $strTarget . "\n";
+            }
+            
+            // 準備した primes で試しに割る
+            for ($i=0;$i < count(self::$primes);$i++) {
+                if (gmp_cmp(gmp_mod($gTarget, self::$primes[ $i ]), 0) == 0) {
+                    if ($bVerbose) {
+                        echo "Divided by prepared primes : " . self::$primes[ $i ] . "\n";
+                    }
+                    return self::$primes[ $i ];
+                }
+            }
             
             // 素因数準備
             $cnt = 0;
@@ -394,6 +394,9 @@
                     }
                     else if ($legendre == 0) {
                         // 割り切れてしまった！
+                        if ($bVerbose) {
+                            echo "Divided by a prime factor : " . $prime . "\n";
+                        }
                         return $prime;
                     }
                 }
@@ -429,8 +432,15 @@
                 $baseArray[] = gmp_strval($gI);
                 $powI = gmp_mul($gI, $gI);
                 $fxArray[ gmp_strval($gI) ] = gmp_strval(gmp_sub($powI, $gTarget));
+                
+                // 割り切れる!
+                if ($fxArray[ gmp_strval($gI) ] == 0) {
+                    if ($bVerbose) {
+                        echo "Divided by a square root : " . gmp_strval($gI) . "\n";
+                    }
+                    return gmp_strval($gI);
+                }
             }
-            
             if ($bVerbose) {
                 self::print_matrix($fxArray, "f(x) array : ");
             }
@@ -464,7 +474,9 @@
             }
             if ($bVerbose) {
                 self::print_matrix($originMatrix, "Origin Matrix : ");
+                self::print_matrix($fxArray, "Remained F(x) : ");
             }
+            
             
             // fx の残りが 1 以外は除外
             $bitMatrix = array();
@@ -476,6 +488,13 @@
                         $checkXArray[] = $key;
                     }
                 }
+            }
+            // 素因数分解できない！
+            if (count($bitMatrix) <= 0) {
+                if ($bVerbose) {
+                    echo "Cannot get a prime factor by quadratic sieve : " . gmp_strval($gTarget) . "\n";
+                }
+                return gmp_strval($gTarget);
             }
             if ($bVerbose) {
                 self::print_matrix($checkXArray, "check X Array : ");
@@ -518,7 +537,7 @@
             $cntConMatrix = count($bitMatrix[ 0 ]);
             self::print_matrix($bitMatrix, "Bit Matrix");
             
-            // 前進消去
+            // ガウス消去
             for ($i=0;$i < $cntMatrix;$i++) {
                 
                 // 対角要素が 0 なら pivoting 
@@ -542,11 +561,12 @@
                 }
                  */
                 
-                // i行目以外の行から引く(Galoa Field 2)
+                // i+1行目の行から引く(Galoa Field 2)
                 for ($k=$i+1;$k < $cntMatrix;$k++) {
                     
                     if ($bitMatrix[ $k ][ $i ] == 0) { continue; }
                     for ($j=0;$j < $cntConMatrix;$j++) {
+                        // 各項目の xor を取る
                         $bitMatrix[ $k ][ $j ] ^= $bitMatrix[ $i ][ $j ];
                     }
                 }
@@ -566,10 +586,17 @@
                         }
                     }
                     else {
-                        $cngMatrix[] = array_slice($bitMatrix[ $i ], $cntMatrix-1);
+                        $cngMatrix[] = array_slice($bitMatrix[ $i ], $cntChkPrimes);
                         continue 2;
                     }
                 }
+            }
+            // 素因数分解できない
+            if (count($cngMatrix) <= 0) {
+                if ($bVerbose) {
+                    echo "Cannot get congruence matrix (may be prime) : " . gmp_strval($gTarget) . "\n"; 
+                }
+                return gmp_strval($gTarget);
             }
             if ($bVerbose) {
                 self::print_matrix($cngMatrix, "Congruence Matrix : ");
@@ -624,8 +651,8 @@
                 
                 $tempX = gmp_init(1);
                 for($j=1;$j < count($primesBitMatrix[ $i ]);$j++) { // j == 0 は -1 なので考慮しない
-                    $bit = $primesBitMatrix[ $i ][ $j ] / 2;
-                    if ($bit != 0) {
+                    $bit = gmp_strval(gmp_div($primesBitMatrix[ $i ][ $j ], 2));
+                    if (gmp_cmp($bit, 0) != 0) {
                         $tempX = gmp_mul($tempX, gmp_pow($checkPrimes[ $j ], $bit));
                     }
                 }
@@ -644,16 +671,52 @@
                 // 自明解は除去
                 if (gmp_cmp($sub, 0) == 0) { continue; }
                 if (gmp_cmp($sub, $gTarget) == 0) { continue; }
-                $dividers[] = gmp_strval(gmp_gcd($sub, $gTarget));
+                $divider = gmp_strval(gmp_gcd($sub, $gTarget));
+                if (gmp_cmp($divider, $gTarget) == 0) { continue; }
+                if (gmp_cmp($divider, 1) == 0) { continue; }
+                $dividers[] = $divider;
             }
             if ($bVerbose) {
                 self::print_matrix($dividers, "Found dividers : ");
             }
-            $retVal = $arg;
+            $retVal = gmp_strval($gTarget);
             if (count($dividers) > 0) {
                 $retVal = array_shift($dividers);
+                if ($bVerbose) {
+                    echo "Get solution : " . gmp_strval($retVal) . "\n";
+                }
+            }
+            else {
+                // 自明解しか出ませんでした!
+                if ($bVerbose) {
+                    echo "Only get trivial solution : " . $retVal . "\n";
+                }
             }
             return $retVal;
+        }
+        
+        public static function factor($arg, $bVerbose) {
+
+            $return = array();
+            $n = $arg;
+            while (gmp_cmp($n, "1") > 0) {
+                $f = self::quadraticSieve($n, $bVerbose);
+                if (gmp_cmp($f, "1") == 0)  { break; }
+                
+                // 残念ながら解けなかった
+                if (gmp_cmp($f, $n) == 0)   { 
+                    $return[] = gmp_strval($f);
+                    $n = gmp_div($n, $f);
+                    break;
+                }
+                
+                if (self::isFermatPrime($f)) {
+                    $return[] = gmp_strval($f);
+                    $n = gmp_div($n, $f);
+                }
+            }
+            sort($return);
+            return $return;
         }
         
         /**
@@ -662,13 +725,14 @@
         public function main($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
-            $strProblem .= "13195 の素因数分解を求めよ。";
-
-            $arg = gmp_init("13195");
+            $arg = gmp_init("1565912117761");
+            
             $result = "";
             if (is_array($args) && array_key_exists(0, $args)) {
                 list($arg) = $args;
             }
+            
+            $strProblem .= gmp_strval($arg) . " の素因数分解を求めよ。";
 
             $n = $arg;
             $result = gmp_strval($n) . " = ";
@@ -683,7 +747,7 @@
 
     $main = new Main();
     echo "result: " . $main->main() . "\n";
-    //echo "Next Prime: " . gmp_strval(Main::getNextPrime(gmp_init("1000000000000000000000000000000000000000000000000000000000000"))) . "\n";
+    //echo "Next Prime: " . gmp_strval(Main::getNextPrime(gmp_init("10000000000000"))) . "\n";
 
     $time_end = microtime(true);
     $time = $time_end - $time_start;

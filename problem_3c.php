@@ -16,14 +16,14 @@
                                         6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4,
                                         2, 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6,
                                         4, 2, 4, 6, 2, 6, 4, 2, 4, 2,10, 2);
-        public static $pk = array ( 0,1,2,3,5,6,7,10,11,13,14,15,17,0 );
+        public static $pk = array( 0,1,2,3,5,6,7,10,11,13,14,15,17,0 );
         public static $checkStart = 212;
         public static $maxInt = 2147483647;
         
         // 篩の素数幅
         public static $sieveWidth = 12;
         // 篩の大きさ
-        public static $sieveBound = 20000;
+        public static $sieveBound = 50;
 
         public function __construct() {
 
@@ -420,6 +420,7 @@
             }
             
             $gBaseFrom = gmp_sub($gRootTarget, self::$sieveBound);
+            if (gmp_cmp($gBaseFrom, 0) < 0) { $gBaseFrom = gmp_init(0); }
             $gBaseTo = gmp_add($gRootTarget, self::$sieveBound);
             if ($bVerbose) {
                 print "Base from: " . gmp_strval($gBaseFrom) . "/";
@@ -725,7 +726,7 @@
         public function main($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
-            $arg = gmp_init("1565912117761");
+            $arg = gmp_init("930091");
             
             $result = "";
             if (is_array($args) && array_key_exists(0, $args)) {

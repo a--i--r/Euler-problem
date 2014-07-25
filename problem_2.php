@@ -4,7 +4,7 @@
     /**
      * Project euler problem 2
      */
-    public function main($args=null)
+    public function execute($args=null)
     {
         $strProblem = "フィボナッチ数列の項は前の2つの項の和である。最初の2項を 1, 2 とすれば、";
         $strProblem .= "数列の項の値が400万を超えない範囲で、偶数値の項の総和を求めよ。";
@@ -26,5 +26,5 @@
         
     }
     $main = new Main();
-    echo "result: " . $main->main();
+    echo "result: " . $main->execute();
 ?>

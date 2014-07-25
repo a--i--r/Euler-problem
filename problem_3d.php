@@ -843,7 +843,7 @@ ini_set('memory_limit', '5120M');
         /**
          * Project euler problem 3
          */
-        public function main($args=null)
+        public function execute($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
             $arg = gmp_init("1565912117761");
@@ -868,7 +868,7 @@ ini_set('memory_limit', '5120M');
     $time_start = microtime(true);
     
     $main = new Main();
-    echo "result: " . $main->main() . "\n";
+    echo "result: " . $main->execute() . "\n";
     //echo "Next Prime: " . gmp_strval(Main::getNextPrime(gmp_init("10000000000000"))) . "\n";
 
     $time_end = microtime(true);

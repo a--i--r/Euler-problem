@@ -145,7 +145,7 @@
         /**
          * Project euler problem 3
          */
-        public function main($args=null)
+        public function execute($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
             $strProblem .= "600851475143 の素因数のうち最大のものを求めよ。";
@@ -166,5 +166,5 @@
 
     }
     $main = new Main();
-    echo "result: " . $main->main();
+    echo "result: " . $main->execute();
 ?>

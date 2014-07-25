@@ -228,7 +228,7 @@
         /**
          * Project euler problem 3
          */
-        public function main($args=null)
+        public function execute($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
             $strProblem .= "1962354882291932713 の素因数分解を求めよ。";
@@ -251,7 +251,7 @@
     $time_start = microtime(true);
 
     $main = new Main();
-    echo "result: " . $main->main();
+    echo "result: " . $main->execute();
 
     $time_end = microtime(true);
     $time = $time_end - $time_start;

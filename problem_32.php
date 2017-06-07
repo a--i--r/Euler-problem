@@ -21,7 +21,7 @@ class Main {
         // 計算
         for ($m=2;$m < 99;$m++) {
             $nBegin = ($m > 9) ? 123 : 1234;
-            $nEnd = 10000 / $m + 1;
+            $nEnd = 9876 / $m + 1;
            
             for ($n=$nBegin;$n < $nEnd;$n++) {
                 $mul = $m * $n;

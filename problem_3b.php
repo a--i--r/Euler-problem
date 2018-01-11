@@ -231,9 +231,9 @@
         public function execute($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
-            $strProblem .= "1962354882291932713 の素因数分解を求めよ。";
+            $strProblem .= "156591211776111 の素因数分解を求めよ。";
 
-            $arg = gmp_init("1962354882291932713");
+            $arg = gmp_init("156591211776111");
             $result = "";
             if (is_array($args) && array_key_exists(0, $args)) {
                 list($arg) = $args;
@@ -241,7 +241,7 @@
 
             $n = $arg;
             $result = gmp_strval($n) . " = ";
-            $sortArray = self::factor($n);
+            $sortArray = $this->factor($n);
             $result .= implode(" * ", $sortArray);
 
             return $result;
@@ -251,7 +251,7 @@
     $time_start = microtime(true);
 
     $main = new Main();
-    echo "result: " . $main->execute();
+    echo "result: " . $main->execute() ."\n";
 
     $time_end = microtime(true);
     $time = $time_end - $time_start;

@@ -857,7 +857,7 @@ ini_set('memory_limit', '5120M');
 
             $n = $arg;
             $result = gmp_strval($n) . " = ";
-            $sortArray = self::factor($n, true);
+            $sortArray = $this->factor($n, true);
             $result .= implode(" * ", $sortArray);
 
             return $result;

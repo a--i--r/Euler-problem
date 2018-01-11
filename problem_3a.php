@@ -856,7 +856,7 @@
 
             $n = $arg;
             $result = gmp_strval($n) . " = ";
-            $sortArray = self::factor($n);
+            $sortArray = $this->factor($n);
             $result .= implode(" * ", $sortArray);
 
             return $result;

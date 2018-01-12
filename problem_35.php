@@ -153,7 +153,7 @@ class Main {
         //var_dump($aryCircularPrimes);
         $ret = count($aryCircularPrimes);
         
-        $base = implode(" , ", $aryCircularPrimes);
+        $base = implode(", ", $aryCircularPrimes);
         $this->hashMap[ "${base}" ] = $ret;
         // ソート
         uasort($this->hashMap, "gmp_cmp");

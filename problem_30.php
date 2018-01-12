@@ -12,7 +12,7 @@ class Main {
                $n = $i;
                while ($n > 0) {
                    $d = $n % 10;
-                   $n /= 10;
+                   $n = intval($n / 10);
                    $temp = $d;
                    for ($j=1;$j < $base;$j++) {
                        $temp *= $d;

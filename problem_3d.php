@@ -1,5 +1,5 @@
 <?php
-ini_set('memory_limit', '5120M');
+ini_set('memory_limit', '6000M');
 
     class Main {
 
@@ -846,6 +846,7 @@ ini_set('memory_limit', '5120M');
         public function execute($args=null)
         {
             $strProblem = "13195 の素因数は 5、7、13、29 である。";
+            $arg = gmp_init("1565912117761");
             $arg = gmp_init("1565912117761");
             
             $result = "";

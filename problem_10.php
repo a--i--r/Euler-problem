@@ -859,7 +859,7 @@
             for ($i="1";gmp_cmp($i, $upperSqrt) <= 0;$i = gmp_add($i, 1)) {
                 for($j=gmp_mul(gmp_mul($i, 2),gmp_add($i, 1));gmp_cmp($j, $sieveBound) <= 0;$j = gmp_add($j, gmp_add(gmp_mul($i, 2),1))) {
                     $t = gmp_intval($j);
-                    $bitArray[ gmp_intval($j)] = 0;
+                    $bitArray[ $t ] = 0;
                 }
             }
             $numbers = array("2");

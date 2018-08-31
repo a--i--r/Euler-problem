@@ -213,7 +213,7 @@
 
             if (gmp_cmp($n, "2") < 0) return false;
             if (gmp_cmp($n, "2") == 0) return true;
-            if (!gmp_and($n, "1")) return false;
+            if (gmp_cmp(gmp_and($n, "1"),"0") == 0) return false;
 
             // 既知の素数チェック
             $ret = self::isPreparedPrime($n);

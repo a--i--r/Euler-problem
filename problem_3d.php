@@ -48,7 +48,7 @@ ini_set('memory_limit', '6000M');
         public function __construct() {
 
             self::$primesString = preg_replace("@\n|\r|\r\n|\s+@", " ", self::$primesString);
-            self::$primes = split(" ", self::$primesString);
+            self::$primes = explode(" ", self::$primesString);
             self::$primesLength = count(self::$primes);
         }
 
@@ -115,7 +115,7 @@ ini_set('memory_limit', '6000M');
 
             if (gmp_cmp($n, "2") < 0) return false;
             if (gmp_cmp($n, "2") == 0) return true;
-            if (!gmp_and($n, "1")) return false;
+            if (gmp_cmp(gmp_and($n, "1"),"0") == 0) return false;
 
             // 既知の素数チェック
             $ret = self::isPreparedPrime($n);

@@ -21,7 +21,7 @@ class Main {
     public function __construct() {
 
         self::$primesString = preg_replace("@\n|\r|\r\n|\s+@", " ", self::$primesString);
-        self::$primes = split(" ", self::$primesString);
+        self::$primes = explode(" ", self::$primesString);
         self::$primesLength = count(self::$primes);
     }
     

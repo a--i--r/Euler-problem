@@ -3,7 +3,8 @@ ini_set('memory_limit', '2048M');
 
 class Main {
 
-    protected $aryPrimes;
+    protected   $aryPrimes;
+    public      $hashMap = array();
     
     public function __construct() {
 

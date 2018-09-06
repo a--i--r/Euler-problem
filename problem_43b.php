@@ -8,50 +8,41 @@ class Main {
     public function __construct() {
 
     }
-    private function getPermutation($n) {
+    
+    // 辞書式順列
+    private static function getPermutation($aryInput, $cnt) {
 
-         if ( $n < 0) {
-             return 0;
-         }
-         $p = 1;
-         for ($i=1;$i <= $n;$i++) {
-             $p *= $i;
-         }
-         return $p;
-    }
-   
-    private function getPandigital($base) {
-        
-        $aryNum = array( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        $aryTemp = $aryInput;
+        $nInput = count($aryInput);
 
-        $ret = "";
-        $remain = $base - 1;
-        $n = count($aryNum);
-        for ($i=1;$i < $n;$i++) {
-            $p = $this->getPermutation($n - $i);
-            $fl = floor($remain / $p);
-            $remain = $remain % $p;
-            $ret .= $aryNum[ $fl ];
-            array_splice($aryNum, $fl, 1);
-            if ($remain == 0) {
-                break;
-            }
+        $div = $cnt-1;
+        $aryMod = array();
+        for ($i=1;$i<=$nInput;$i++) {
+            $mod = $div % $i;
+            $div = intdiv($div, $i);
+            $aryMod[] = $mod;
         }
-        for ($i=0;$i < count($aryNum);$i++) {
-            $ret .= $aryNum[ $i ];
+        $aryRev = array_reverse($aryMod);
+
+        $result = "";
+        for ($i=0;$i < count($aryRev);$i++) {
+            $spliced = array_splice($aryTemp, $aryRev[ $i ], 1);
+            $result .= $spliced[ 0 ];
         }
-        return $ret;
+
+        return $result;
     }
     
     public function getSolution($n) {
         
         $ret = "0";
+        $aryInput = array( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 );
         $aryDivisors = [ 1, 2, 3, 5, 7, 11, 13, 17 ];
         $nDivisors = count($aryDivisors);
         
         for ($i=1;$i < 3265920;$i++) {
             $bDiv = true;
-            $strNum = $this->getPandigital($i);
+            $strNum = $this->getPermutation($aryInput, $i);
 //            if ($strNum == "1406357289") {
 //                echo "OK";
 //            }

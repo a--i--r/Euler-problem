@@ -9,6 +9,7 @@ class Main {
 
     }
     
+    // from 44
     private static function isPentagonal($n) {
         
 //        $target = (sqrt(1 + 24 * $n) + 1.0) / 6.0;

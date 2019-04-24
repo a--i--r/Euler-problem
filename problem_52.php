@@ -9,27 +9,6 @@ class Main {
 
     }
     
-    public static function doSeive($limit) {
-
-        $sieveBound = gmp_strval(gmp_div(gmp_sub($limit, 1), 2));
-        $upperSqrt = gmp_strval(gmp_div(gmp_sub(gmp_sqrt($limit), 1), 2));
-
-        $bitArray = array_fill(0, $sieveBound+1, 1);
-        for ($i="1";gmp_cmp($i, $upperSqrt) <= 0;$i = gmp_add($i, 1)) {
-            for($j=gmp_mul(gmp_mul($i, 2),gmp_add($i, 1));gmp_cmp($j, $sieveBound) <= 0;$j = gmp_add($j, gmp_add(gmp_mul($i, 2),1))) {
-                $t = gmp_intval($j);
-                $bitArray[ $t ] = 0;
-            }
-        }
-        $numbers = array("2");
-        for ($i="1";gmp_cmp($i, $sieveBound) <= 0;$i = gmp_add($i, 1)) {
-            if ($bitArray[ gmp_intval($i) ]) {
-                $numbers[] = gmp_strval(gmp_add(gmp_mul(2, $i), 1));
-            }
-        }
-        return $numbers;
-    }
-    
     private static function isPermutation($m, $n) {
         
         $aryNum = array_fill(0, 10, 0);
@@ -58,24 +37,23 @@ class Main {
     public function getSolution($n) {
         
         $ret = 0;
-        $aryPrimes = self::doSeive($n);
-        $nPrimes = count($aryPrimes);
+        $start = 1;
+        $found = FALSE;
         
-        for ($i=0;$i < $nPrimes;$i++) {
-            if ($aryPrimes[ $i ] <= 1489) { continue; }
-            
-            for ($j=$i+1;$j < $nPrimes;$j++) {
-                $k = $aryPrimes[ $j ] + ($aryPrimes[ $j ] - $aryPrimes[ $i ]);
-                if ($k < $n && in_array($k, $aryPrimes)) {
-                    if (self::isPermutation($aryPrimes[ $i ], $aryPrimes[ $j ]) &&
-                        self::isPermutation($aryPrimes[ $j ], $k)) {
-                        $ret = $aryPrimes[ $i ] . $aryPrimes[ $j ] . $k;
+        while (!$found) {
+            $start *= 10;
+            for ($i = $start;$i < intDiv($start * 10,6); $i++) {
+                $found = TRUE;
+                for ($j = 2;$j <= 6;$j++) {
+                    if (!self::isPermutation($i, $j * $i)) {
+                        $found = FALSE;
                         break;
                     }
                 }
-            }
-            if ($ret > 0) {
-                break;
+                if ($found) {
+                    $ret = $i;
+                    break;
+                }
             }
         }
         return $ret;
@@ -97,19 +75,13 @@ class Main {
      */
     public function execute($args=null) {
         
-        $this->strProblem = "項差3330の等差数列1487, 4817, 8147は次の2つの変わった性質を持つ.\n\n";
+        $this->strProblem = "125874を2倍すると251748となる. これは元の数125874と順番は違うが同じ数を含む.\n\n";
         $strPRB = <<< PRB
-            
-(i)3つの項はそれぞれ素数である. 
-(ii)各項は他の項の置換で表される. 
-            
-1, 2, 3桁の素数にはこのような性質を持った数列は存在しないが, 4桁の増加列にはもう1つ存在する.
-
-それではこの数列の3つの項を連結した12桁の数を求めよ.
+2x, 3x, 4x, 5x, 6x が x と同じ数を含むような最小の正整数 x を求めよ.
 PRB;
 
         $this->strProblem .= $strPRB;
-        $arg = "10000";
+        $arg = "answer";
 
         $result = "";
         if (is_array($args) && array_key_exists(0, $args)) {
